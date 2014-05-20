@@ -1,0 +1,32 @@
+import com.aldebaran.proxy.*;
+/**
+ *  @author Petroula
+ *  
+ */
+
+
+public class NaoRobot {
+   
+	static String NAOQI_IP = "192.168.1.3";
+	static int NAOQI_PORT = 9559;
+	static ALMotionProxy movement = new ALMotionProxy(NAOQI_IP, NAOQI_PORT);
+	static ALNavigationProxy navigate = new ALNavigationProxy(NAOQI_IP, NAOQI_PORT);
+
+	
+    public void turnLeft() {
+    	movement.walkTo(0, 0, (float) (Math.PI/3.14));
+	}
+			
+	public void turnRight() {
+		movement.walkTo(0, 0, -(float) (Math.PI/3.14));
+	}
+			
+	public void moveForward() {
+		navigate.setSecurityDistance((float) 0.30);
+		navigate.moveTo((float) 0.8, 0, 0);	   
+	}		
+			
+	public void moveBackwards() {
+		movement.walkTo((float) -0.8, 0, 0);
+	}
+}
