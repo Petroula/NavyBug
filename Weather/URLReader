@@ -1,0 +1,93 @@
+import java.net.*;
+import java.util.Scanner;
+import java.io.*;
+
+/**
+ *  @authors Petroula, Dennis
+ *  
+ */
+
+
+public class URLReader {
+	
+	//Variables for the weather information the robot will say
+	String temperature = "";
+	String weather = "";
+	
+	//Parses the online xml file into a text file locally	
+    public String parseWeather (String city) throws Exception {
+
+    	
+    	File file = new File("D:/weather.txt");
+        URL oracle = new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&mode=xml&units=metric");
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(oracle.openStream()));
+        
+        if (!file.exists()) {
+			file.createNewFile();
+		}
+        
+        FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		
+		
+        
+        
+		String inputLine="";
+		
+		//Checks that the line contains certain words to only get info about temperature and weather condition    
+        while ((inputLine = in.readLine()) != null){
+        	
+        	if(inputLine.contains("city id")||inputLine.contains("temperature")||inputLine.contains("weather")){
+        	bw.write(inputLine);
+        //	System.out.println(inputLine);
+        	}
+        }
+        
+        bw.close();
+        in.close();
+      
+        
+        //Parses the info needed from each line
+        Scanner scan=new Scanner(file);
+       
+        while(scan.hasNext()){
+        	String input=scan.next();
+            input = input.replaceAll("=", "").replaceAll("\"", "").replaceAll("<", "")
+            		.replaceAll("/>","").replaceAll(">", "");
+       
+            for (int i=1; i<input.length(); i++) {
+            	
+            	if(input.contains("value") && input.contains(temperature)) { 		
+            		input =input.replace("value", "");
+            		temperature = input;
+            		if(temperature.contains(".")) {
+            			temperature =temperature.replace(".", "point");
+            			}
+            			
+            		}
+            		
+            	 
+            	}
+                if(input.contains("value")) {
+                	input =input.replace("value", "");
+                	weather += input;
+                	if(scan.hasNext()) {
+                		weather += " " + scan.next().replaceAll("\"", "");
+                		weather = weather.split("icon")[0];
+                		if(scan.hasNext()) {               			                   		
+                			weather += " " + scan.next().replaceAll("\"", "");
+                			weather = weather.split("icon")[0];
+                    	 }
+                	 } 
+                 }           		
+             }   
+        
+        scan.close();
+   
+		return "For the place of " + city + " the temperature is " + temperature + " celsius and the "
+        		+ "weather condition can be described as " + weather;   
+    }
+}  
+    
+ 
