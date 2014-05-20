@@ -1,0 +1,75 @@
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import com.aldebaran.proxy.*;
+
+/**
+ *  @authors Petroula, Simon
+ *  
+ */
+
+public class SayWeather {
+	
+	
+	private static String NAOQI_IP = "169.254.13.235";
+	private static int NAOQI_PORT = 9559;
+	
+	static ALMemoryProxy memory = new ALMemoryProxy(NAOQI_IP, NAOQI_PORT);
+	static ALSpeechRecognitionProxy recog = new ALSpeechRecognitionProxy(NAOQI_IP, NAOQI_PORT);
+	static ALTextToSpeechProxy tts = new ALTextToSpeechProxy(NAOQI_IP, NAOQI_PORT);
+	static ALAudioDeviceProxy audio = new ALAudioDeviceProxy(NAOQI_IP, NAOQI_PORT);
+
+
+	// Loads the jnaoqi library
+	static {
+	System.loadLibrary("jnaoqi");
+	}
+
+	
+	public static void main(String[] args) {
+		String [] speak = {"weather", "hello"};
+	    recog.setAudioExpression(true);//When set to True, a “bip” is played at the beginning of the recognition process, and another “bip” is played at the end of the process. 
+	    								//This is a useful indication to let the user know when it is appropriate to speak.
+	    audio.setOutputVolume(100);
+	    recog.setVisualExpression(true);//Enables or disables the LEDs animations showing the state of the recognition engine during the recognition process.
+	    recog.setVocabulary(speak, true);// Sets the list of words/phrases (vocabulary) that should be recognized by the speech recognition engine. 
+	    								//If word spotting is disabled (default), the engine expects to hear one of the specified words, nothing more, nothing less. 
+	    								//If enabled, the specified words can be pronounced in the middle of a whole speech stream, the engine will try to spot them.
+	    
+	    recog.subscribe("WordRecognized");  // Subscribes to ALSpeechRecognition. This causes the module to start writing information to ALMemory in “WordRecognized”.
+	    									// But not sure if this is correct 
+	    while(true) {
+	    if(memory.getData("SpeechDetected").toBoolean()){
+	    	Variant words = memory.getData("WordRecognized");
+	    	String word = (String)words.getElement(0).toString();
+	    		if(!word.equals("")) {
+	    		   if(word.equals("weather")) {
+	    			   System.out.println("check");
+	    			   speech();
+	    			   break;
+	    			   
+	    			   
+	    		   }else{
+	    			System.out.println("Not recognized");	
+	    		}	  			
+	    	}
+	    	}
+	    }
+	    
+	}
+	
+	public static void speech(){
+	
+		URLReader url=new URLReader();
+		recog.unsubscribe("WordRecognized"); // Unsubscribes to ALSpeechRecognition. This causes the module to stop writing information to ALMemory in “WordRecognized”.   
+		
+		try {
+			
+			tts.say(url.parseWeather("Gothenburg"));
+			
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Connection not established. Please try again.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}     
+	}
+}
