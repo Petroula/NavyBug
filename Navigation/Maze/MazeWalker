@@ -1,0 +1,70 @@
+import com.aldebaran.proxy.*;
+
+/**
+ *  @author Petroula
+ *  
+ *  Nao escaping a maze - the solution is based on the "wall follower" algorithm ("right hand rule").
+ *  Essentially, NAO checks every few steps if there is a wall on its right side, leading finally
+ *  to an opening somewhere in the maze. 
+ *   
+ */
+
+public class MazeWalker {
+	
+	static NaoRobot nao = new NaoRobot();
+	
+	static String NAOQI_IP = "192.168.1.3";
+	static int NAOQI_PORT = 9559;
+	static ALSonarProxy sonar = new ALSonarProxy(NAOQI_IP, NAOQI_PORT);
+	static ALMemoryProxy memory = new ALMemoryProxy(NAOQI_IP, NAOQI_PORT);
+	static ALSensorsProxy sensors = new ALSensorsProxy(NAOQI_IP, NAOQI_PORT);
+	
+	static String leftSonar = "Device/SubDeviceList/US/Left/Sensor/Value";
+	static String rightSonar = "Device/SubDeviceList/US/Right/Sensor/Value";
+	
+	    // Loads the jnaoqi library
+		static {
+		System.loadLibrary("jnaoqi");
+		}
+	
+	public static void escapeMaze() {
+		
+		// Subscribe to sonar event
+		sonar.subscribe("Sonar");
+		sensors.subscribe("LeftBumperPressed");
+		sensors.subscribe("RightBumperPressed");
+			
+		// Check for obstacle
+		if(!(memory.getData(leftSonar).toFloat() >0.5) || !(memory.getData(rightSonar).toFloat() > 0.5)) {
+			System.out.println("obstacle detected");
+			nao.turnLeft();
+			if(memory.getData(leftSonar).toFloat() > 0.5 || memory.getData(rightSonar).toFloat() > 0.5) {
+				nao.moveForward();
+				if(memory.getData("LeftBumperPressed").toFloat() == 1.0 || memory.getData("RightBumperPressed").toFloat() == 1.0) {
+					nao.moveBackwards();
+					escapeMaze();				
+				}
+		    } else {
+				nao.turnLeft();
+				nao.moveForward();
+				if(memory.getData("LeftBumperPressed").toFloat() == 1.0 || memory.getData("RightBumperPressed").toFloat() == 1.0) {
+					nao.moveBackwards();
+					escapeMaze();
+				}				
+			}
+			nao.turnRight();
+			escapeMaze();
+	  } else {
+			nao.moveForward();
+			escapeMaze();		
+		}
+	}	
+		
+	public static void main(String[] args) {
+		
+		nao.turnRight();
+		escapeMaze();
+			
+	}
+
+}
