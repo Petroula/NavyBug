@@ -1,0 +1,30 @@
+import com.aldebaran.proxy.*;
+
+/**
+ *  @author Petroula
+ *  
+ */
+
+public class CheckIntruder {
+	
+	public static String NAOQI_IP = "192.168.0.1";
+	public static int NAOQI_PORT = 9559;
+	static ALSonarProxy sonar = new ALSonarProxy(NAOQI_IP, NAOQI_PORT);
+	static ALMemoryProxy memory = new ALMemoryProxy(NAOQI_IP, NAOQI_PORT);
+	static ALTextToSpeechProxy talk = new ALTextToSpeechProxy(NAOQI_IP, NAOQI_PORT);
+	
+	// Accesses the sonar value keys
+	static String leftSonar = "Device/SubDeviceList/US/Left/Sensor/Value";
+	static String rightSonar = "Device/SubDeviceList/US/Right/Sensor/Value";
+	
+	public void check() {
+		
+		sonar.subscribe("Sonar");
+		
+		// Checks distance
+	   if(!(memory.getData(leftSonar).toFloat() >0.5) || !(memory.getData(rightSonar).toFloat() > 0.5)) {		
+			talk.say("Intruder in the house");
+			System.out.println("Intruder Detected");
+		}
+	}
+}
