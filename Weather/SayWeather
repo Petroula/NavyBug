@@ -36,7 +36,7 @@ public class SayWeather {
 	    								//If enabled, the specified words can be pronounced in the middle of a whole speech stream, the engine will try to spot them.
 	    
 	    recog.subscribe("WordRecognized");  // Subscribes to ALSpeechRecognition. This causes the module to start writing information to ALMemory in “WordRecognized”.
-	    									// But not sure if this is correct 
+	    								
 	    while(true) {
 	    if(memory.getData("SpeechDetected").toBoolean()){
 	    	Variant words = memory.getData("WordRecognized");
