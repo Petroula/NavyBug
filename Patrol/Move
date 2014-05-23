@@ -1,0 +1,35 @@
+import com.aldebaran.proxy.*;
+
+/**
+ *  @authors Petroula, Dennis, Natasha
+ *  
+ */
+
+public class Move{
+	
+	static CheckIntruder intruder = new CheckIntruder();
+	static int iterations= 3;
+	public static String NAOQI_IP = "192.168.0.1";
+	public static int NAOQI_PORT = 9559;
+	static ALMotionProxy movement = new ALMotionProxy(NAOQI_IP, NAOQI_PORT);
+
+
+   public static void main(String[] args) {
+	     moveTo();
+    }
+	
+	public static void moveTo() {
+
+		if(iterations == 0) {
+			movement.rest();
+		} else {		
+			movement.moveInit();
+		    movement.moveTo(1, 0, 0);
+		    intruder.check();
+			movement.moveTo(0, 0, (float) 3.14);
+			intruder.check();
+			iterations--;
+			moveTo();
+		 }		
+	   }		
+	}
