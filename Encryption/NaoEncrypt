@@ -22,13 +22,17 @@ public class NaoEncrypt {
 
 	public static void main(String[] args) {
 	    String [] speak = {"fifteen", "sixteen"};
-	    audi.setOutputVolume(50);
+	    
+	    audi.setOutputVolume(100);
+		tts.say("Message received");
+		tts.say("what is the security key ?");
 	    recog.setAudioExpression(true);
 	    recog.setVisualExpression(true);
 	    recog.setVocabulary(speak, true);
 	    recog.subscribe("WordRecognized");
 	    encrypt.setKey(15);
-		encrypt.encrypt("missile strikes confirmed, deploying Super Nova");
+		encrypt.encrypt("Your bacon order is ready");
+
 	    while(true){
 	    if(memory.getData("SpeechDetected").toBoolean()){
 	    	Variant words = memory.getData("WordRecognized");
@@ -39,11 +43,11 @@ public class NaoEncrypt {
 	    		if(word.equals("fifteen") && ws > 0.2){
 	    			decrypt.setKey(15);
 	    			decrypt.decrypt(encrypt.returnEncryption());
-	    			tts.say(decrypt.returnEncryption());
+	    			tts.say(decrypt.returnDecryption());
 	    			break;
 	                
 	    		}else{
-	    			tts.say(encrypt.returnEncryption());
+	    			tts.say("wrong key");
 	    		}	break;
 	    		} 	
 	    	}
@@ -53,5 +57,7 @@ public class NaoEncrypt {
 
 
 	}
+
+
 
 
