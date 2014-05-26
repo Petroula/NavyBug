@@ -29,11 +29,11 @@ public class Decrypt {
 		  }
 		  
 		  else{
-			  returnEncryption();
+			  returnDecryption();
 		  }
 	   }
 	  
-	  String returnEncryption(){
+	  String returnDecryption(){
 		  return encryptedString;
 	  }
 	  
@@ -88,23 +88,5 @@ public class Decrypt {
 		return letter;
 	}
 	
-	public static void main (String[]args){
-		
-		Encrypt encrypt=new Encrypt ();
-		Decrypt decrypt=new Decrypt();
-		
-		encrypt.setKey(15);
-		encrypt.encrypt("missile strikes confirmed, deploying Super Nova");
-		System.out.println(encrypt.returnEncryption());
-		
-		decrypt.setKey(15);
-		decrypt.decrypt(encrypt.returnEncryption());
-		System.out.println(decrypt.returnEncryption());
-		
-		
-		
-		
-		
-	}
 }
 
