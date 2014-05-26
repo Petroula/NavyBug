@@ -1,0 +1,60 @@
+
+/**
+  * @author Dennis
+  */
+
+
+public class Navigation {
+
+	int south_side=0;
+	int north_side=0;
+	int east_side=0;
+	int west_side=0;
+	
+	double x=0;
+	double y=0;
+	
+	double final_location=0;
+	double partial_location=0;
+	
+	public Navigation(int side_length){
+		this.south_side=side_length;
+		this.north_side=side_length;
+		this.east_side=side_length;
+		this.west_side=side_length;
+	}
+	
+	public void Calculate(double radians, double movement_length){
+		
+		final_location=movement_length;
+		partial_location=movement_length/10;
+		
+		double degrees = 90.0;
+	    double radianCheck = Math.toRadians(degrees);
+	    
+	    
+		
+		if((getX() < south_side || getX() < north_side) && (getY() < west_side || getY() < east_side) && (radians < radianCheck) && (radians>0)){
+		
+		double triangle_height=Math.sin(radians)*movement_length;
+		double triangle_length=(1+Math.cos(radians))*movement_length;
+		
+		setCoordinates(triangle_length, triangle_height);
+		
+		}
+
+	}
+	
+	public void setCoordinates(double triangle_length, double triangle_height){
+		this.x=triangle_length;
+		this.y=triangle_height;
+	}
+	
+	public double getX(){
+		return x;
+	}
+	
+	public double getY(){
+		return y;
+	}
+}
