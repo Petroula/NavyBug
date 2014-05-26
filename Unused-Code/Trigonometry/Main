@@ -1,0 +1,40 @@
+import com.aldebaran.proxy.*;
+
+
+/**
+  * @author Dennis
+  */
+
+public class Main {
+static String naoqi_ip = "192.168.0.1";
+static int naoqi_port =9559;
+static ALMotionProxy navy = new ALMotionProxy(naoqi_ip, naoqi_port);
+	
+
+	static double radians=0.5;
+	static double movement=0.9;
+	
+	public static void main(String [] args){
+		
+		int side=2;
+		
+		Navigation nav=new Navigation(side);
+		float radiansf =(float) radians;
+		float movef = (float) movement;
+		nav.Calculate(radians, movement);
+		
+		//navy.moveTo(movef, 0	, radiansf);
+		if(nav.getX()>side || nav.getY()>side){
+			
+		System.out.println("Can't move outside boundaries");
+		
+		
+		System.out.println(nav.getX() + ", " + nav.getY());
+		}
+		else{
+			navy.walkTo(1, 0, 0);
+			//navy.walkTo(movef,  0	, 0);
+			System.out.println(nav.getX() + ", " + nav.getY());
+		}
+	}
+}
