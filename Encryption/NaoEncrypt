@@ -1,0 +1,57 @@
+import com.aldebaran.proxy.ALAudioDeviceProxy;
+import com.aldebaran.proxy.ALMemoryProxy;
+import com.aldebaran.proxy.ALSpeechRecognitionProxy;
+import com.aldebaran.proxy.ALTextToSpeechProxy;
+import com.aldebaran.proxy.Variant;
+
+/**
+ * @author Simon
+ *
+ */
+
+
+public class NaoEncrypt {
+	static Encrypt encrypt = new Encrypt();
+	static Decrypt decrypt=new Decrypt();
+	public static String NAOQI_IP = "192.168.0.1";
+	public static int NAOQI_PORT = 9559;
+	static ALAudioDeviceProxy audi = new ALAudioDeviceProxy(NAOQI_IP, NAOQI_PORT);
+	static ALMemoryProxy memory = new ALMemoryProxy(NAOQI_IP, NAOQI_PORT);
+	static ALSpeechRecognitionProxy recog = new ALSpeechRecognitionProxy(NAOQI_IP, NAOQI_PORT);
+	static ALTextToSpeechProxy tts = new ALTextToSpeechProxy(NAOQI_IP, NAOQI_PORT);
+
+	public static void main(String[] args) {
+	    String [] speak = {"fifteen", "sixteen"};
+	    audi.setOutputVolume(50);
+	    recog.setAudioExpression(true);
+	    recog.setVisualExpression(true);
+	    recog.setVocabulary(speak, true);
+	    recog.subscribe("WordRecognized");
+	    encrypt.setKey(15);
+		encrypt.encrypt("missile strikes confirmed, deploying Super Nova");
+	    while(true){
+	    if(memory.getData("SpeechDetected").toBoolean()){
+	    	Variant words = memory.getData("WordRecognized");
+	    	String word = (String)words.getElement(0).toString();
+	    	float ws = (float)words.getElement(1).toFloat();
+	    	
+	    	if(!word.equals("")){
+	    		if(word.equals("fifteen") && ws > 0.2){
+	    			decrypt.setKey(15);
+	    			decrypt.decrypt(encrypt.returnEncryption());
+	    			tts.say(decrypt.returnEncryption());
+	    			break;
+	                
+	    		}else{
+	    			tts.say(encrypt.returnEncryption());
+	    		}	break;
+	    		} 	
+	    	}
+	    }
+	    recog.unsubscribe("WordRecognized"); // Unsubscribes to ALSpeechRecognition. This causes the module to stop writing information to ALMemory in “WordRecognized”.
+	    }
+
+
+	}
+
+
