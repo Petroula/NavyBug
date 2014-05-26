@@ -1,0 +1,97 @@
+/**
+ * @author Dennis
+ *
+ */
+
+public class Encrypt {
+	String [] alphabet= new String [] {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " "};
+	private String encryptedString="";
+	 
+	private int key= 0;
+	private int amount=1200;
+	
+	
+	  void encrypt (String word) {
+		  String lastString="";
+		  if(amount!=0){
+		  for(int i = 0; i < word.length(); i++){
+			    char c = word.charAt(i);        
+			    String check=Character.toString(c);
+			    
+			    
+			    String lowCase=check.toLowerCase();
+			    
+			    lastString+=findLetter(lowCase);
+		  }
+		  amount--;
+		  encryptedString=lastString;
+		  encrypt(encryptedString);
+		  
+		  }
+		  
+		  else{
+		  returnEncryption();
+		  }
+	   }
+	  
+	  
+	  String returnEncryption(){
+		  return encryptedString;
+	  }
+	  
+	
+	
+	  
+	  
+	public void setKey(int key){
+		this.key=key;
+		}
+	
+	
+	private int hash (int position, int key) {
+	
+	int newPosition=(position+key)%27;
+		
+	return newPosition;
+	}
+	
+	private String findLetter (String character) {
+		
+		String letter="";
+		
+		int offset; 
+		
+		for(int i=0; i < alphabet.length; i++){
+			
+			if(alphabet[i].equals(character)){
+				offset=hash(i, key);
+				letter=encryptLetter(offset);
+				return letter;
+			}
+		}
+	
+		return letter;
+	}
+	
+	private String encryptLetter (int offset){
+		
+		String letter="";
+		
+		for(int i=0; i<alphabet.length; i++){
+			if(i==offset){
+				letter=alphabet[i];
+				return letter;
+				
+			}
+		}
+		return letter;
+	}
+	
+	public static void main (String[]args){
+		
+		Encrypt encrypt=new Encrypt ();
+		
+		encrypt.encrypt("bacon is");
+		System.out.println(encrypt.returnEncryption());
+	}
+}
