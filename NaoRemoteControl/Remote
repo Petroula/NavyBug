@@ -1,0 +1,141 @@
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import java.awt.event.*;
+import java.awt.*;
+
+import com.aldebaran.proxy.*;
+
+
+
+      //@Author Anastasia Koni
+
+
+
+public class Remote extends JPanel implements ActionListener,KeyListener{
+	static String naoqi_ip = "192.168.1.68";
+	static int naoqi_port =9559;
+	//Creating objects from the Nao libraries to use
+	static ALMotionProxy movement = new ALMotionProxy(naoqi_ip, naoqi_port);
+	static ALRobotPostureProxy posture = new ALRobotPostureProxy(naoqi_ip, naoqi_port);
+	static ALTextToSpeechProxy talk=new ALTextToSpeechProxy(naoqi_ip,naoqi_port);
+	static JPanel RemotePanel=new JPanel();
+	static JLabel label7=new JLabel("Instructions");
+	static JLabel label = new JLabel("Press T to talk");
+	static JLabel label2= new JLabel("Press X to stand up");
+	static JLabel label3= new JLabel("Press S to sit");
+	static JLabel label4= new JLabel("Press A to turn left");
+	static JLabel label5= new JLabel("Press D to turn right");
+	static JLabel label6= new JLabel("Press W to move forward");
+	
+   //Generates a random word/phrase for the robot to say
+	public static String Word (){
+		
+		String[] words= new String [] {"What's up?", "Hello, I'm NAO", "What's your name?" };
+		
+		
+		int randomWord=(int)Math.random()*words.length;
+		
+		return words[randomWord];
+	}
+	public Remote() {
+		
+		JFrame Remote= new JFrame("Remote");
+		Remote.setContentPane(RemotePanel);
+		Remote.setSize(400, 300);
+		RemotePanel.setLayout(new BoxLayout(RemotePanel, BoxLayout.Y_AXIS));
+		RemotePanel.add(label7);
+		label7.setAlignmentX(Component.CENTER_ALIGNMENT);
+		RemotePanel.add(label);
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		RemotePanel.add(label2);
+		label2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		RemotePanel.add(label3);
+		label3.setAlignmentX(Component.CENTER_ALIGNMENT);
+		RemotePanel.add(label4);
+		label4.setAlignmentX(Component.CENTER_ALIGNMENT);
+		RemotePanel.add(label5);
+		label5.setAlignmentX(Component.CENTER_ALIGNMENT);
+		RemotePanel.add(label6);
+		label6.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    Remote.setLocationRelativeTo(null);
+	    Remote.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    Remote.setVisible(true);
+	    RemotePanel.add(label);
+	    
+	    //Creating KeyListener and adding keybindings to keyboard.
+        RemotePanel.addKeyListener(new KeyListener(){
+        	private KeyEvent e;
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_A){
+					movement.moveTo(0,0,(float)3.14/2);
+					System.out.println("Turning Left");
+					}
+				if(e.getKeyCode()==KeyEvent.VK_D){
+					movement.moveTo(0,0,(float)-3.14/2);
+					System.out.println("Turning Right");
+				}
+				if(e.getKeyCode()==KeyEvent.VK_W){
+					movement.moveTo((float)0.5,0,0);
+					System.out.println("Moving Forward");
+				}
+				if(e.getKeyCode()==KeyEvent.VK_S){
+					posture.goToPosture("Sit",(float)0.5);
+				}
+				if(e.getKeyCode()==KeyEvent.VK_X){
+					posture.goToPosture("Stand", (float)0.5);
+				}
+				if(e.getKeyCode()==KeyEvent.VK_T){
+					talk.say(Word());
+				}
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+        	
+        }
+		);
+        RemotePanel.setFocusable(true);
+        RemotePanel.requestFocus();
+        
+	  }
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public static void main(String[] args) {
+		new Remote();
+	}
+	
+	
+}
